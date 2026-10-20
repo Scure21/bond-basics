@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A plain-language, interactive guide to how bonds and the bond market work.">
+<title>Bonds, Simply Explained</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a single reading column of "chapters" that follow the video's order, opened by a mock bond certificate. */
+:root{
+  --paper:#f3f5f2; --card:#ffffff; --ink:#15233a; --muted:#56637a; --line:#d5dbd6;
+  --green:#1d6e52; --green-soft:#e1efe8; --amber:#b5651d; --amber-soft:#f8ebdc;
+  --navy-soft:#e6ebf3;
+  --display:"Young Serif", Georgia, "Times New Roman", serif;
+  --body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0f1724; --card:#172234; --ink:#e7ecf3; --muted:#9aa8bd; --line:#2b3a50;
+  --green:#5cc49b; --green-soft:#183a32; --amber:#e9a25f; --amber-soft:#3a2a1c; --navy-soft:#1e2c42; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0f1724; --card:#172234; --ink:#e7ecf3; --muted:#9aa8bd; --line:#2b3a50;
+  --green:#5cc49b; --green-soft:#183a32; --amber:#e9a25f; --amber-soft:#3a2a1c; --navy-soft:#1e2c42; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:40px 64px;display:flex;flex-direction:column;gap:72px}
+h1,h2,h3{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(2.4rem,6vw,4rem)}
+h2{font-size:clamp(1.7rem,3.6vw,2.4rem)}
+h3{font-size:1.25rem}
+p{margin:0;max-width:65ch}
+.eyebrow{font-family:var(--mono);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--green);font-weight:600}
+.lede{font-size:1.15rem;color:var(--muted)}
+.kid{display:flex;gap:12px;align-items:flex-start;background:var(--green-soft);border-radius:10px;padding:14px 16px;max-width:65ch}
+.kid b{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--green);white-space:nowrap;padding-top:4px}
+.chapter{display:flex;flex-direction:column;gap:22px}
+.chap-head{display:flex;flex-direction:column;gap:8px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.tile .tag{font-family:var(--mono);font-size:.72rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.tile p{color:var(--muted);font-size:.96rem}
+.tile .ex{font-family:var(--mono);font-size:.85rem;color:var(--ink);background:var(--navy-soft);border-radius:6px;padding:6px 10px;margin-top:auto}
+.num{font-variant-numeric:tabular-nums}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:40px;align-items:center}
+@media (max-width:820px){.hero{grid-template-columns:1fr}}
+.hero-text{display:flex;flex-direction:column;gap:18px}
+.cert{position:relative;background:var(--card);border-radius:6px;padding:14px}
+.cert-in{border:2px solid var(--green);outline:1px solid var(--green);outline-offset:4px;border-radius:3px;padding:26px 24px;display:flex;flex-direction:column;gap:16px;
+  background:repeating-linear-gradient(45deg,transparent 0 9px,color-mix(in srgb,var(--green) 6%,transparent) 9px 10px),repeating-linear-gradient(-45deg,transparent 0 9px,color-mix(in srgb,var(--green) 6%,transparent) 9px 10px)}
+.cert-top{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:.72rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.cert-title{font-family:var(--display);font-size:1.6rem;text-align:center;color:var(--green)}
+.cert-sub{text-align:center;font-size:.9rem;color:var(--muted);margin:0 auto}
+.cert-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cf{border-top:1px solid var(--line);padding-top:8px}
+.cf span{display:block;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.cf strong{font-family:var(--display);font-weight:400;font-size:1.25rem}
+.coupons{display:flex;gap:6px;flex-wrap:wrap}
+.coupons i{font-style:normal;font-family:var(--mono);font-size:.68rem;border:1px dashed var(--green);color:var(--green);border-radius:4px;padding:4px 6px}
+
+/* Why borrow */
+.choice{display:flex;flex-direction:column;gap:8px}
+.choice .verdict{font-family:var(--mono);font-size:.78rem;font-weight:600;border-radius:999px;padding:3px 10px;align-self:flex-start}
+.bad{background:var(--amber-soft);color:var(--amber)}
+.good{background:var(--green-soft);color:var(--green)}
+
+/* Timeline */
+.timeline{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;overflow-x:auto}
+.timeline svg{min-width:560px;width:100%;height:auto;display:block}
+
+/* Seesaw lab */
+.lab{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px;align-items:center}
+@media (max-width:820px){.lab{grid-template-columns:1fr}}
+.lab svg{width:100%;height:auto;display:block}
+#plank{transition:transform .35s ease;transform-origin:250px 140px}
+@media (prefers-reduced-motion:reduce){#plank{transition:none}}
+.controls{display:flex;flex-direction:column;gap:16px;min-width:0}
+label{font-weight:600}
+input[type=range]{width:100%;accent-color:var(--green)}
+input[type=range]:focus-visible{outline:2px solid var(--green);outline-offset:4px}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ro{background:var(--navy-soft);border-radius:10px;padding:12px 14px}
+.ro span{display:block;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ro strong{font-family:var(--display);font-weight:400;font-size:1.6rem}
+.status{font-size:.95rem;color:var(--muted)}
+.status b{color:var(--ink)}
+
+/* Formula */
+.formula{font-family:var(--mono);font-size:1rem;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.formula .eq{color:var(--green);font-weight:600}
+
+/* Curve */
+.curve{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.curve-scroll{overflow-x:auto}
+.curve svg{min-width:520px;width:100%;height:auto;display:block}
+.toggle{display:flex;gap:6px;flex-wrap:wrap}
+.toggle button{font:inherit;font-size:.9rem;font-weight:600;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.toggle button:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.axis text{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+.axis line{stroke:var(--line)}
+
+/* Chain */
+.chain{display:flex;flex-wrap:wrap;align-items:stretch;gap:10px}
+.link{flex:1 1 160px;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.link .step{font-family:var(--mono);font-size:.7rem;color:var(--green);letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.link p{font-size:.92rem;color:var(--muted)}
+.arrow{align-self:center;color:var(--muted);font-family:var(--mono)}
+@media (max-width:640px){.arrow{display:none}}
+.crash .link .step{color:var(--amber)}
+
+/* Ratings */
+.ladder{display:flex;flex-wrap:wrap;gap:6px}
+.rung{flex:1 1 70px;text-align:center;font-family:var(--mono);font-size:.8rem;font-weight:600;border-radius:6px;padding:8px 4px}
+.ladder-legend{display:flex;justify-content:space-between;font-size:.82rem;color:var(--muted);gap:12px}
+
+/* Glossary */
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:0 32px;border-top:1px solid var(--line)}
+.gloss div{border-bottom:1px solid var(--line);padding:12px 0;display:flex;flex-direction:column;gap:2px;min-width:0}
+.gloss dt{font-weight:700}
+.gloss dd{margin:0;color:var(--muted);font-size:.95rem}
+footer{border-top:1px solid var(--line);padding-top:20px;font-size:.85rem;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+footer a{color:var(--green)}
+</style>
+
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-text">
+      <span class="eyebrow">Bond markets, explained simply</span>
+      <h1>A bond is a fancy IOU.</h1>
+      <p class="lede">When a government or a company needs money, it borrows from people like you. You hand over cash today. They promise to pay you a little "thank you" money along the way, and give your cash back on a set date. That promise, written down, is a bond.</p>
+      <div class="kid"><b>Like you're 5</b><span>You lend your friend $10 for lemonade supplies. She writes "I owe you $10, and I'll give you 50¢ every summer until I pay you back." That note is a bond.</span></div>
+    </div>
+    <div class="cert" aria-label="Example bond certificate">
+      <div class="cert-in">
+        <div class="cert-top"><span>No. 004217</span><span>Example bond</span></div>
+        <div class="cert-title">Town of Maple Creek</div>
+        <p class="cert-sub">promises to pay the holder of this bond the amount below, plus interest, as written.</p>
+        <div class="cert-fields">
+          <div class="cf"><span>Face value</span><strong class="num">$1,000</strong></div>
+          <div class="cf"><span>Coupon</span><strong class="num">5% a year</strong></div>
+          <div class="cf"><span>Maturity</span><strong class="num">10 years</strong></div>
+          <div class="cf"><span>Issuer</span><strong>The town</strong></div>
+        </div>
+        <div class="coupons" aria-hidden="true"><i>$50</i><i>$50</i><i>$50</i><i>$50</i><i>$50</i><i>$50</i><i>$50</i><i>$50</i><i>$50</i><i>$50</i></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 1 FOUR TERMS -->
+  <section class="chapter">
+    <div class="chap-head">
+      <span class="eyebrow">The 4 words you need</span>
+      <h2>Every bond has the same four labels</h2>
+      <p class="lede">Read these off any bond and you know what you're getting.</p>
+    </div>
+    <div class="grid g4">
+      <div class="tile"><span class="tag">Face value · par · principal</span><h3>How much you lend</h3><p>The amount you get back at the very end.</p><span class="ex num">$1,000</span></div>
+      <div class="tile"><span class="tag">Coupon</span><h3>The thank-you money</h3><p>The interest paid each year, as a percent of face value. It never changes.</p><span class="ex num">5% → $50 / year</span></div>
+      <div class="tile"><span class="tag">Maturity</span><h3>The pay-back day</h3><p>When the loan ends and you get your face value back.</p><span class="ex num">10 years</span></div>
+      <div class="tile"><span class="tag">Issuer</span><h3>Who's borrowing</h3><p>A national government, a city, or a company. Who they are decides how safe it is.</p><span class="ex">Town of Maple Creek</span></div>
+    </div>
+  </section>
+
+  <!-- 2 WHY BORROW -->
+  <section class="chapter">
+    <div class="chap-head">
+      <span class="eyebrow">Why bonds exist</span>
+      <h2>Why not just print money or sell shares?</h2>
+      <p class="lede">Borrowers have three ways to get cash. Bonds are often the least painful.</p>
+    </div>
+    <div class="grid g3">
+      <div class="tile choice"><span class="verdict bad">Risky</span><h3>Print money</h3><p>Only governments can, and too much makes every dollar worth less. Prices go up for everyone. That's inflation.</p></div>
+      <div class="tile choice"><span class="verdict bad">Costly</span><h3>Sell shares</h3><p>Only companies can. Each share sold gives away a slice of ownership and future profits, forever.</p></div>
+      <div class="tile choice"><span class="verdict good">Usually best</span><h3>Borrow with bonds</h3><p>Get the cash now, pay a known amount of interest, and owe nothing once it's paid back. No ownership lost.</p></div>
+    </div>
+  </section>
+
+  <!-- 3 HOW INVESTORS EARN -->
+  <section class="chapter">
+    <div class="chap-head">
+      <span class="eyebrow">How you make money</span>
+      <h2>Two ways a bond pays you</h2>
+    </div>
+    <div class="grid g2">
+      <div class="tile"><span class="tag">Way 1 · Income</span><h3>Collect the coupons</h3><p>Hold the bond to the end. You get $50 each year, then your $1,000 back. Steady and predictable.</p></div>
+      <div class="tile"><span class="tag">Way 2 · Price change</span><h3>Sell it to someone else</h3><p>Bonds trade like used cars. If you sell for more than you paid, you keep the difference. You can also lose if you sell for less.</p></div>
+    </div>
+    <div class="timeline" role="img" aria-label="Timeline: you pay $1,000 in year 0, receive $50 each year for 10 years, and get $1,000 back in year 10. Total received $1,500.">
+      <svg viewBox="0 0 640 190" xmlns="http://www.w3.org/2000/svg" id="tl"></svg>
+    </div>
+  </section>
+
+  <!-- 4 SEESAW -->
+  <section class="chapter">
+    <div class="chap-head">
+      <span class="eyebrow">The rule that confuses everyone</span>
+      <h2>Interest rates and bond prices sit on a seesaw</h2>
+      <p class="lede">When new bonds start paying more, your old bond's fixed $50 looks worse. Nobody pays full price for it, so its price drops. When new bonds pay less, your old bond looks great, and its price rises.</p>
+    </div>
+    <div class="lab">
+      <svg viewBox="0 0 500 230" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <polygon points="250,142 222,205 278,205" fill="var(--ink)"/>
+        <line x1="150" y1="205" x2="350" y2="205" stroke="var(--line)" stroke-width="3"/>
+        <g id="plank">
+          <rect x="40" y="132" width="420" height="14" rx="7" fill="var(--muted)"/>
+          <rect x="52" y="76" width="120" height="56" rx="10" fill="var(--amber-soft)" stroke="var(--amber)"/>
+          <text x="112" y="100" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--amber)">NEW RATES</text>
+          <text x="112" y="120" text-anchor="middle" font-family="Young Serif, Georgia, serif" font-size="17" fill="var(--ink)" id="sRate">5.0%</text>
+          <rect x="328" y="76" width="120" height="56" rx="10" fill="var(--green-soft)" stroke="var(--green)"/>
+          <text x="388" y="100" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--green)">YOUR BOND</text>
+          <text x="388" y="120" text-anchor="middle" font-family="Young Serif, Georgia, serif" font-size="17" fill="var(--ink)" id="sPrice">$1,000</text>
+        </g>
+      </svg>
+      <div class="controls">
+        <label for="rate">Move today's interest rate</label>
+        <input type="range" id="rate" min="1" max="9" step="0.5" value="7">
+        <div class="readout">
+          <div class="ro"><span>Rate on new bonds</span><strong class="num" id="oRate">7.0%</strong></div>
+          <div class="ro"><span>Price of your 5% bond</span><strong class="num" id="oPrice">$860</strong></div>
+          <div class="ro"><span>Your coupon (fixed)</span><strong class="num">$50</strong></div>
+          <div class="ro"><span>Yield for a new buyer</span><strong class="num" id="oYield">5.8%</strong></div>
+        </div>
+        <p class="status" id="status"></p>
+      </div>
+    </div>
+    <div class="kid"><b>Like you're 5</b><span>Your sticker pays 1 candy a week. A new sticker pays 2 candies. Nobody will trade a full new sticker for yours, so yours is now worth less.</span></div>
+  </section>
+
+  <!-- 5 YIELD -->
+  <section class="chapter">
+    <div class="chap-head">
+      <span class="eyebrow">Yield in 3 minutes</span>
+      <h2>Yield is what you really earn</h2>
+      <p class="lede">The coupon is fixed in dollars. The price you pay isn't. Yield turns both into one number you can compare.</p>
+    </div>
+    <div class="formula"><span>Current yield</span><span class="eq">=</span><span>yearly coupon</span><span class="eq">÷</span><span>price you pay</span></div>
+    <div class="grid g3">
+      <div class="tile"><span class="tag">Bought at a discount</span><h3 class="num">$50 ÷ $900 = 5.6%</h3><p>Paid less than face value, so you earn more than the coupon.</p></div>
+      <div class="tile"><span class="tag">Bought at par</span><h3 class="num">$50 ÷ $1,000 = 5.0%</h3><p>Paid exactly face value. Yield equals the coupon.</p></div>
+      <div class="tile"><span class="tag">Bought at a premium</span><h3 class="num">$50 ÷ $1,100 = 4.5%</h3><p>Paid extra, so you earn less than the coupon.</p></div>
+    </div>
+    <p class="status">Price up, yield down. Price down, yield up. Same seesaw, different name. Pros usually quote <b>yield to maturity</b>, which also counts the gain or loss you lock in when you're paid back at face value.</p>
+  </section>
+
+  <!-- 6 YIELD CURVE -->
+  <section class="chapter">
+    <div class="chap-head">
+      <span class="eyebrow">The yield curve</span>
+      <h2>Wall Street's favorite recession signal</h2>
+      <p class="lede">Line up a government's bonds from shortest to longest and plot their yields. Normally, locking money away longer pays more, so the line slopes up.</p>
+    </div>
+    <div class="curve">
+      <div class="toggle" role="group" aria-label="Curve shape">
+        <button type="button" id="bNormal" aria-pressed="true">Normal</button>
+        <button type="button" id="bInv" aria-pressed="false">Inverted</button>
+      </div>
+      <div class="curve-scroll">
+        <svg viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustrative yield curves by maturity">
+          <g class="axis">
+            <line x1="60" y1="223.3" x2="570" y2="223.3"/><line x1="60" y1="150" x2="570" y2="150"/><line x1="60" y1="76.7" x2="570" y2="76.7"/>
+            <text x="50" y="227" text-anchor="end">3%</text><text x="50" y="154" text-anchor="end">4%</text><text x="50" y="81" text-anchor="end">5%</text>
+            <text x="60" y="285" text-anchor="middle">3 mo</text><text x="185" y="285" text-anchor="middle">2 yr</text><text x="310" y="285" text-anchor="middle">5 yr</text><text x="435" y="285" text-anchor="middle">10 yr</text><text x="560" y="285" text-anchor="middle">30 yr</text>
+          </g>
+          <polyline id="cNormal" points="60,223.3 185,194 310,164.7 435,135.3 560,106" fill="none" stroke="var(--green)" stroke-width="3" stroke-linejoin="round"/>
+          <polyline id="cInv" points="60,62 185,91.3 310,128 435,150 560,142.7" fill="none" stroke="var(--amber)" stroke-width="3" stroke-linejoin="round" opacity=".15"/>
+          <g id="dots"></g>
+        </svg>
+      </div>
+      <p class="status" id="curveNote"></p>
+    </div>
+    <p class="status">Numbers are illustrative, not today's rates.</p>
+  </section>
+
+  <!-- 7 MORTGAGE -->
+  <section class="chapter">
+    <div class="chap-head">
+      <span class="eyebrow">Why it matters at home</span>
+      <h2>Bond markets set your mortgage rate</h2>
+      <p class="lede">Banks don't pick mortgage rates out of thin air. They watch what safe government bonds pay, then add a cushion for risk.</p>
+    </div>
+    <div class="chain">
+      <div class="link"><span class="step">Step 1</span><h3>Bond investors</h3><p>Buy and sell government bonds every day, setting their yield.</p></div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="link"><span class="step">Step 2</span><h3>10-year Treasury yield</h3><p>The benchmark. US 30-year mortgages tend to follow it.</p></div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="link"><span class="step">Step 3</span><h3>Lender adds a spread</h3><p>Extra percent for the chance you pay early or don't pay.</p></div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="link"><span class="step">Step 4</span><h3>Your mortgage rate</h3><p>Treasury yield up, your rate usually up. And the reverse.</p></div>
+    </div>
+    <div class="kid"><b>Same idea</b><span>Car loans, credit cards, business loans and the return on your pension all lean on bond yields too.</span></div>
+  </section>
+
+  <!-- 8 CRASH -->
+  <section class="chapter crash">
+    <div class="chap-head">
+      <span class="eyebrow">When things go wrong</span>
+      <h2>How a bond crash spreads</h2>
+      <p class="lede">Bonds are the base layer of the financial system. When their prices fall hard, the shock travels.</p>
+    </div>
+    <div class="chain">
+      <div class="link"><span class="step">Shock</span><h3>Yields jump</h3><p>Inflation fears or worry about a borrower's debt.</p></div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="link"><span class="step">Losses</span><h3>Bond prices fall</h3><p>Banks, pensions and funds holding bonds lose value.</p></div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="link"><span class="step">Squeeze</span><h3>Borrowing gets pricey</h3><p>Loans and mortgages cost more; lenders get cautious.</p></div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="link"><span class="step">Slowdown</span><h3>Economy cools</h3><p>Less spending, less hiring, lower stock prices.</p></div>
+    </div>
+  </section>
+
+  <!-- 9 TIME RISK TRUST -->
+  <section class="chapter">
+    <div class="chap-head">
+      <span class="eyebrow">The big picture</span>
+      <h2>Every bond yield is a price on three things</h2>
+    </div>
+    <div class="grid g3">
+      <div class="tile"><span class="tag">Time</span><h3>How long you wait</h3><p>Longer loans usually pay more, and their prices swing harder when rates move.</p></div>
+      <div class="tile"><span class="tag">Risk</span><h3>Will you get paid?</h3><p>Shakier borrowers must pay higher yields to convince anyone to lend.</p></div>
+      <div class="tile"><span class="tag">Trust</span><h3>Do people believe the promise?</h3><p>Confidence in a government or company keeps its borrowing cheap. Lose it, and costs jump.</p></div>
+    </div>
+    <div class="tile">
+      <span class="tag">Credit ratings: report cards for borrowers</span>
+      <div class="ladder" id="ladder"></div>
+      <div class="ladder-legend"><span>Safer · lower yield</span><span>Riskier · higher yield ("junk")</span></div>
+    </div>
+  </section>
+
+  <!-- GLOSSARY -->
+  <section class="chapter">
+    <div class="chap-head">
+      <span class="eyebrow">Cheat sheet</span>
+      <h2>Bond words at a glance</h2>
+    </div>
+    <dl class="gloss">
+      <div><dt>Bond</dt><dd>A loan you give to a government or company, written as an IOU.</dd></div>
+      <div><dt>Issuer</dt><dd>Whoever borrows the money and owes it back.</dd></div>
+      <div><dt>Face value (par)</dt><dd>The amount repaid at the end, often $1,000.</dd></div>
+      <div><dt>Coupon</dt><dd>Fixed yearly interest, as a percent of face value.</dd></div>
+      <div><dt>Maturity</dt><dd>The date the loan ends and face value is repaid.</dd></div>
+      <div><dt>Yield</dt><dd>Your real return, based on the price you actually paid.</dd></div>
+      <div><dt>Discount / premium</dt><dd>Trading below / above face value.</dd></div>
+      <div><dt>Treasury</dt><dd>A bond issued by the US government; the safest benchmark.</dd></div>
+      <div><dt>Yield curve</dt><dd>Yields plotted from short to long maturities.</dd></div>
+      <div><dt>Inverted curve</dt><dd>Short-term pays more than long-term; often a warning sign.</dd></div>
+      <div><dt>Credit rating</dt><dd>A grade (AAA to D) for how likely the borrower pays back.</dd></div>
+      <div><dt>Default</dt><dd>When the borrower fails to pay what it promised.</dd></div>
+    </dl>
+  </section>
+
+  <footer>
+    <span>Based on the video <a href="https://www.youtube.com/watch?v=22qkuMCzN7I" target="_blank" rel="noopener">"If You Don't Understand Bonds, You Don't Understand Money"</a>. Example figures are illustrative.</span>
+    <span>For learning only. Not financial advice.</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const fmt = v => '$' + Math.round(v).toLocaleString('en-US');
+
+  /* Timeline */
+  const tl = document.getElementById('tl');
+  let s = '';
+  const x0 = 40, x1 = 600, base = 120, step = (x1 - x0) / 10;
+  s += `<line x1="${x0}" y1="${base}" x2="${x1}" y2="${base}" stroke="var(--line)" stroke-width="2"/>`;
+  s += `<rect x="${x0-14}" y="${base}" width="28" height="44" rx="4" fill="var(--amber)"/>`;
+  s += `<text x="${x0}" y="${base+60}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--amber)">−$1,000</text>`;
+  for (let i = 1; i <= 10; i++) {
+    const x = x0 + i * step;
+    const h = i === 10 ? 96 : 22;
+    s += `<rect x="${x-9}" y="${base-22}" width="18" height="22" rx="3" fill="var(--green)"/>`;
+    if (i === 10) s += `<rect x="${x-9}" y="${base-96}" width="18" height="72" rx="3" fill="var(--green)" opacity=".55"/>`;
+    s += `<text x="${x}" y="${base+18}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="var(--muted)">yr ${i}</text>`;
+  }
+  s += `<text x="${x0+step*5}" y="${base-32}" text-anchor="middle" font-family="Figtree, sans-serif" font-size="12" fill="var(--ink)">$50 coupon every year</text>`;
+  s += `<text x="${x1-24}" y="${base-102}" text-anchor="end" font-family="Figtree, sans-serif" font-size="12" fill="var(--ink)">+ $1,000 back</text>`;
+  s += `<text x="${x0+step*5}" y="${base+60}" text-anchor="middle" font-family="Figtree, sans-serif" font-size="13" font-weight="700" fill="var(--ink)">You lend $1,000 → you get back $1,500 in total</text>`;
+  tl.innerHTML = s;
+
+  /* Seesaw */
+  const r = document.getElementById('rate');
+  const price = rate => { const i = rate/100, n = 10, c = 50, f = 1000; return c*(1-Math.pow(1+i,-n))/i + f*Math.pow(1+i,-n); };
+  function update(){
+    const v = parseFloat(r.value), p = price(v);
+    document.getElementById('oRate').textContent = v.toFixed(1) + '%';
+    document.getElementById('sRate').textContent = v.toFixed(1) + '%';
+    document.getElementById('oPrice').textContent = fmt(p);
+    document.getElementById('sPrice').textContent = fmt(p);
+    document.getElementById('oYield').textContent = (50/p*100).toFixed(1) + '%';
+    document.getElementById('plank').style.transform = `rotate(${Math.max(-12,Math.min(12,(v-5)*3))}deg)`;
+    const st = document.getElementById('status');
+    if (v > 5) st.innerHTML = `New bonds pay more than your 5%, so buyers will only pay <b>${fmt(p)}</b> for yours. It trades at a <b>discount</b>.`;
+    else if (v < 5) st.innerHTML = `New bonds pay less than your 5%, so buyers will pay <b>${fmt(p)}</b> for yours. It trades at a <b>premium</b>.`;
+    else st.innerHTML = `New bonds pay the same 5% as yours, so it's worth exactly its <b>$1,000</b> face value (par).`;
+  }
+  r.addEventListener('input', update); update();
+
+  /* Yield curve */
+  const pts = {
+    n:[[60,223.3,'3.0%'],[185,194,'3.4%'],[310,164.7,'3.8%'],[435,135.3,'4.2%'],[560,106,'4.6%']],
+    i:[[60,62,'5.2%'],[185,91.3,'4.8%'],[310,128,'4.3%'],[435,150,'4.0%'],[560,142.7,'4.1%']]
+  };
+  const notes = {
+    n:'<b>Normal:</b> lenders want more for tying money up longer. Investors expect steady growth.',
+    i:'<b>Inverted:</b> short-term bonds pay more than long-term ones. Investors expect rates to fall because trouble is coming. Many US recessions were preceded by an inverted curve.'
+  };
+  function setCurve(k){
+    document.getElementById('bNormal').setAttribute('aria-pressed', k==='n');
+    document.getElementById('bInv').setAttribute('aria-pressed', k==='i');
+    document.getElementById('cNormal').setAttribute('opacity', k==='n'?1:.15);
+    document.getElementById('cInv').setAttribute('opacity', k==='i'?1:.15);
+    const col = k==='n' ? 'var(--green)' : 'var(--amber)';
+    document.getElementById('dots').innerHTML = pts[k].map(([x,y,l]) =>
+      `<circle cx="${x}" cy="${y}" r="5" fill="${col}"/><text x="${x}" y="${y-12}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--ink)">${l}</text>`).join('');
+    document.getElementById('curveNote').innerHTML = notes[k];
+  }
+  document.getElementById('bNormal').addEventListener('click', () => setCurve('n'));
+  document.getElementById('bInv').addEventListener('click', () => setCurve('i'));
+  setCurve('n');
+
+  /* Ratings ladder */
+  const grades = ['AAA','AA','A','BBB','BB','B','CCC','D'];
+  document.getElementById('ladder').innerHTML = grades.map((g,i) => {
+    const t = i / (grades.length - 1);
+    const mix = Math.round(t*100);
+    return `<span class="rung" style="background:color-mix(in srgb, var(--amber-soft) ${mix}%, var(--green-soft));color:color-mix(in srgb, var(--amber) ${mix}%, var(--green))">${g}</span>`;
+  }).join('');
+})();
+</script>
+
+</body>
+</html>
